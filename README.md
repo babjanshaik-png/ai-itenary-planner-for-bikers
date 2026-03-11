@@ -1,73 +1,81 @@
-# Welcome to your Lovable project
+# Login Application with MongoDB
 
-## Project info
+This is a simple login application that uses MongoDB to store user data.
 
-**URL**: https://lovable.dev/projects/f3872577-dd82-40b5-b70e-0c96228ff384
+## Prerequisites
 
-## How can I edit this code?
+1. **Node.js** - Download from [nodejs.org](https://nodejs.org/)
+2. **MongoDB** - Download from [mongodb.com](https://www.mongodb.com/try/download/community)
 
-There are several ways of editing your application.
+## Setup Instructions
 
-**Use Lovable**
+### 1. Install Dependencies
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/f3872577-dd82-40b5-b70e-0c96228ff384) and start prompting.
+Open a terminal in this folder and run:
+```bash
+npm install
+```
 
-Changes made via Lovable will be committed automatically to this repo.
+### 2. Make sure MongoDB is running
 
-**Use your preferred IDE**
+Start MongoDB service:
+- **Windows**: MongoDB should be running as a service after installation
+- Or run: `mongod --dbpath <path-to-data-directory>`
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### 3. Start the Server
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+```bash
+npm start
+```
 
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Or for development with auto-restart:
+```bash
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+### 4. Open the Application
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Open your browser and go to:
+```
+http://localhost:3000
+```
 
-**Use GitHub Codespaces**
+## Database Information
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+- **Connection String**: `mongodb://localhost:27017`
+- **Database Name**: `login`
+- **Collection Name**: `user`
 
-## What technologies are used for this project?
+## Features
 
-This project is built with:
+- User registration (Sign Up)
+- User login
+- Data stored in MongoDB
+- Toggle between Login and Sign Up forms
+- Input validation
+- Error and success messages
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+## User Schema
 
-## How can I deploy this project?
+Each user document contains:
+- `name` - User's full name
+- `username` - Unique username
+- `password` - User's password (Note: In production, passwords should be hashed!)
+- `createdAt` - Timestamp of registration
 
-Simply open [Lovable](https://lovable.dev/projects/f3872577-dd82-40b5-b70e-0c96228ff384) and click on Share -> Publish.
+## API Endpoints
 
-## Can I connect a custom domain to my Lovable project?
+- `POST /api/register` - Register a new user
+- `POST /api/login` - Login existing user
+- `GET /api/users` - Get all users (for testing only)
 
-Yes, you can!
+## Security Note
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+⚠️ **Important**: This is a basic implementation for learning purposes. In a production environment:
+1. Always hash passwords using bcrypt or similar
+2. Implement JWT or session-based authentication
+3. Add HTTPS
+4. Implement rate limiting
+5. Add CSRF protection
+6. Validate and sanitize all inputs
+7. Remove the `/api/users` endpoint

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Login Test - Revora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .test-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            max-width: 400px;
+            width: 100%;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: #f0f9ff;
+            border-left: 4px solid #0ea5e9;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .info p {
+            margin: 5px 0;
+            color: #0c4a6e;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            opacity: 0.9;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+        }
+        .result.success {
+            background: #dcfce7;
+            border-left: 4px solid #16a34a;
+            color: #166534;
+        }
+        .result.error {
+            background: #fee2e2;
+            border-left: 4px solid #dc2626;
+            color: #991b1b;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h2>🏍️ Quick Login Test</h2>
+        
+        <div class="info">
+            <p><strong>Test User:</strong></p>
+            <p>Username: shyam</p>
+            <p>Name: Shyamnandhan SP</p>
+        </div>
+
+        <button onclick="testLogin()">🚀 Test Login & Redirect</button>
+        <button onclick="checkSession()">🔍 Check Current Session</button>
+        <button onclick="clearSession()">🗑️ Clear Session</button>
+        
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        async function testLogin() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result';
+            resultDiv.textContent = 'Testing login...';
+
+            try {
+                const response = await fetch('http://localhost:3001/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: 'shyam',
+                        password: 'test123' // Change this to your actual password
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.success) {
+                    // Store user data in sessionStorage
+                    sessionStorage.setItem('userData', JSON.stringify(data.user));
+                    
+                    resultDiv.className = 'result success';
+                    resultDiv.textContent = `✅ Login successful! User: ${data.user.name}. Redirecting in 2 seconds...`;
+                    
+                    setTimeout(() => {
+                        window.location.href = 'http://localhost:8082/';
+                    }, 2000);
+                } else {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = `❌ Login failed: ${data.message}. Try changing the password in the script.`;
+                }
+            } catch (error) {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = `❌ Error: ${error.message}. Make sure login server is running on port 3001.`;
+            }
+        }
+
+        function checkSession() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            
+            const userData = sessionStorage.getItem('userData');
+            
+            if (userData) {
+                try {
+                    const user = JSON.parse(userData);
+                    resultDiv.className = 'result success';
+                    resultDiv.innerHTML = `✅ Session found!<br>Name: ${user.name}<br>Username: ${user.username}`;
+                } catch (e) {
+                    resultDiv.className = 'result error';
+                    resultDiv.textContent = '❌ Session data is corrupted';
+                }
+            } else {
+                resultDiv.className = 'result error';
+                resultDiv.textContent = '❌ No session data found';
+            }
+        }
+
+        function clearSession() {
+            sessionStorage.clear();
+            const resultDiv = document.getElementById('result');
+            resultDiv.style.display = 'block';
+            resultDiv.className = 'result success';
+            resultDiv.textContent = '✅ Session cleared!';
+        }
+    </script>
+</body>
+</html>
